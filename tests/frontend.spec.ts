@@ -29,14 +29,6 @@ async function basicInit(page: Page) {
         await route.fulfill({ json: loggedInUser });
     });
 
-    // //Logout
-    // await page.route('*/**/api/auth', async (route) => {
-    //     expect(route.request().method()).toBe('DELETE');
-    //     loggedInUser = undefined;
-    //     const responseMessage = { message: 'logout successful' }
-    //     await route.fulfill({ json: responseMessage });
-    // });
-
     // A standard menu
     await page.route('*/**/api/order/menu', async (route) => {
         const menuRes = [
@@ -165,18 +157,25 @@ test('purchase with login', async ({ page }) => {
     });
 
     // test('logout', async ({ page }) => {
-    //     await basicInit(page);
-
+    //     await page.goto('/');
+    //
+    //     await page.route('*/**/api/user', async (route) => {
+    //         const loginReq = route.request().postDataJSON();
+    //         const user = { id: '99', name: loginReq.name, email: loginReq.email, roles: [{ role: Role.Diner }] };
+    //         expect(route.request().method()).toBe('PUT');
+    //         await route.fulfill({ json: { user, token: 'ghijkl' } });
+    //     });
+    //
     //     await page.getByRole('link', { name: 'Login' }).click();
     //     await page.getByPlaceholder('Email address').click();
     //     await page.getByPlaceholder('Email address').fill('d@jwt.com');
     //     await page.getByPlaceholder('Email address').press('Tab');
     //     await page.getByPlaceholder('Password').fill('a');
     //     await page.getByRole('button', { name: 'Login' }).click();
-
+    //
     //     await page.getByRole('link', { name: 'home' }).click();
     //     await page.getByRole('link', { name: 'Logout' }).click();
-    // }); Needs bug fixing
+    // });
 
     test('about', async ({ page }) => {
         await basicInit(page);
