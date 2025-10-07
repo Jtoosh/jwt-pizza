@@ -1,5 +1,6 @@
 import {Role, User} from "../src/service/pizzaService";
-import {expect, Page, test} from "@playwright/test";
+import { Page, } from "@playwright/test";
+import { test, expect } from 'playwright-test-coverage';
 
 async function basicInit(page: Page) {
     let loggedInUser: User | undefined;
@@ -27,6 +28,14 @@ async function basicInit(page: Page) {
         expect(route.request().method()).toBe('GET');
         await route.fulfill({ json: loggedInUser });
     });
+
+    // //Logout
+    // await page.route('*/**/api/auth', async (route) => {
+    //     expect(route.request().method()).toBe('DELETE');
+    //     loggedInUser = undefined;
+    //     const responseMessage = { message: 'logout successful' }
+    //     await route.fulfill({ json: responseMessage });
+    // });
 
     // A standard menu
     await page.route('*/**/api/order/menu', async (route) => {
@@ -126,3 +135,52 @@ test('purchase with login', async ({ page }) => {
     // Check balance
     await expect(page.getByText('0.008')).toBeVisible();
 });
+
+    test('register', async ({ page }) => {
+        await page.goto('/');
+        
+        await page.route('*/**/api/user', async (route) => {
+            const registerReq = route.request().postDataJSON();
+            const registerRes = {
+                user: { id: '99', name: registerReq.name, email: registerReq.email, roles: [{ role: Role.Diner }] },
+                token: 'ghijkl',
+            };
+            expect(route.request().method()).toBe('POST');
+            await route.fulfill({ json: registerRes });
+        });
+
+       
+        await page.getByRole('link', { name: 'Register' }).click();
+        await page.getByRole('textbox', { name: 'Full name' }).fill('testReg');
+        await page.getByRole('textbox', { name: 'Full name' }).press('Tab');
+        await page.getByRole('textbox', { name: 'Email address' }).fill('testReg@jwt.com');
+        await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+        await page.getByRole('textbox', { name: 'Password' }).fill('testReg');
+        await page.getByRole('button', { name: 'Register' }).click();
+
+       await page.getByRole('link', { name: 't', exact: true }).click();
+       await expect(page.getByText('testReg', {exact: true})).toBeVisible(); 
+       await expect(page.getByText('testReg@jwt.com')).toBeVisible();
+       await expect(page.getByText('diner', {exact : true})).toBeVisible();
+    });
+
+    // test('logout', async ({ page }) => {
+    //     await basicInit(page);
+
+    //     await page.getByRole('link', { name: 'Login' }).click();
+    //     await page.getByPlaceholder('Email address').click();
+    //     await page.getByPlaceholder('Email address').fill('d@jwt.com');
+    //     await page.getByPlaceholder('Email address').press('Tab');
+    //     await page.getByPlaceholder('Password').fill('a');
+    //     await page.getByRole('button', { name: 'Login' }).click();
+
+    //     await page.getByRole('link', { name: 'home' }).click();
+    //     await page.getByRole('link', { name: 'Logout' }).click();
+    // }); Needs bug fixing
+
+    test('about', async ({ page }) => {
+        await basicInit(page);
+
+        await page.getByRole('link', { name: 'About' }).click();
+        await expect(page.getByText('The secret sauce')).toBeVisible();
+    });
