@@ -85,3 +85,14 @@ export async function basicInit(page: Page, user?: User) {
 
     await page.goto('/');
 }
+
+export async function adminInit(page:Page){
+    await page.goto('/');
+
+    await page.getByRole('link', { name: 'Login' }).click();
+    await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
+    await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+    await page.getByRole('textbox', { name: 'Password' }).fill('admin');
+    await page.getByRole('button', { name: 'Login' }).click();
+    await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
+}

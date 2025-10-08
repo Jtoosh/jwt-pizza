@@ -43,36 +43,42 @@ test('purchase with login', async ({ page }) => {
     await page.getByRole('button', { name: 'Pay now' }).click();
 
     // Check balance
+
+    await page.getByRole('button', { name: 'Verify' }).click();
+    await expect(page.getByText('invalid', { exact: true })).toBeVisible();
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByText('Here is your JWT Pizza!')).toBeVisible();
+    
     await expect(page.getByText('0.008')).toBeVisible();
 });
 
-    test('register', async ({ page }) => {
-        await page.goto('/');
-        
-        await page.route('*/**/api/user', async (route) => {
-            const registerReq = route.request().postDataJSON();
-            const registerRes = {
-                user: { id: '99', name: registerReq.name, email: registerReq.email, roles: [{ role: Role.Diner }] },
-                token: 'ghijkl',
-            };
-            expect(route.request().method()).toBe('POST');
-            await route.fulfill({ json: registerRes });
-        });
-
-       
-        await page.getByRole('link', { name: 'Register' }).click();
-        await page.getByRole('textbox', { name: 'Full name' }).fill('testReg');
-        await page.getByRole('textbox', { name: 'Full name' }).press('Tab');
-        await page.getByRole('textbox', { name: 'Email address' }).fill('testReg@jwt.com');
-        await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
-        await page.getByRole('textbox', { name: 'Password' }).fill('testReg');
-        await page.getByRole('button', { name: 'Register' }).click();
-
-       await page.getByRole('link', { name: 't', exact: true }).click();
-       await expect(page.getByText('testReg', {exact: true})).toBeVisible(); 
-       await expect(page.getByText('testReg@jwt.com')).toBeVisible();
-       await expect(page.getByText('diner', {exact : true})).toBeVisible();
+test('register', async ({ page }) => {
+    await page.goto('/');
+    
+    await page.route('*/**/api/user', async (route) => {
+        const registerReq = route.request().postDataJSON();
+        const registerRes = {
+            user: { id: '99', name: registerReq.name, email: registerReq.email, roles: [{ role: Role.Diner }] },
+            token: 'ghijkl',
+        };
+        expect(route.request().method()).toBe('POST');
+        await route.fulfill({ json: registerRes });
     });
+
+    
+    await page.getByRole('link', { name: 'Register' }).click();
+    await page.getByRole('textbox', { name: 'Full name' }).fill('testReg');
+    await page.getByRole('textbox', { name: 'Full name' }).press('Tab');
+    await page.getByRole('textbox', { name: 'Email address' }).fill('testReg@jwt.com');
+    await page.getByRole('textbox', { name: 'Email address' }).press('Tab');
+    await page.getByRole('textbox', { name: 'Password' }).fill('testReg');
+    await page.getByRole('button', { name: 'Register' }).click();
+
+    await page.getByRole('link', { name: 't', exact: true }).click();
+    await expect(page.getByText('testReg', {exact: true})).toBeVisible(); 
+    await expect(page.getByText('testReg@jwt.com')).toBeVisible();
+    await expect(page.getByText('diner', {exact : true})).toBeVisible();
+});
 
     // test('logout', async ({ page }) => {
     //     await page.goto('/');
@@ -95,17 +101,17 @@ test('purchase with login', async ({ page }) => {
     //     await page.getByRole('link', { name: 'Logout' }).click();
     // });
 
-    test('about', async ({ page }) => {
-        await basicInit(page);
+test('about', async ({ page }) => {
+    await basicInit(page);
 
-        await page.getByRole('link', { name: 'About' }).click();
-        await expect(page.getByText('The secret sauce')).toBeVisible();
-    });
+    await page.getByRole('link', { name: 'About' }).click();
+    await expect(page.getByText('The secret sauce')).toBeVisible();
+});
 
-    test('franchise dash', async ({ page }) => {
-        await basicInit(page);
-        await page.getByLabel('Global').getByRole('link', { name: 'Franchise' }).click();
-        await expect(page.getByText('So you want a piece of the pie?')).toBeVisible();
-        
-    });
+test('history', async ({ page }) => {
+    await basicInit(page);
 
+    
+    await page.getByRole('link', { name: 'History' }).click();
+    await expect(page.getByText('Mama Rucci, my my')).toBeVisible();
+});
