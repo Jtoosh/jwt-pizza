@@ -89,6 +89,27 @@ export async function basicInit(page: Page, user?: User) {
 export async function adminInit(page:Page){
     await page.goto('/');
 
+    // Standard franchises and stores
+    await page.route(/\/api\/franchise(\?.*)?$/, async (route) => {
+        const franchiseRes = {
+            franchises: [
+                {
+                    id: 2,
+                    name: 'LotaPizza',
+                    stores: [
+                        { id: 4, name: 'Lehi' },
+                        { id: 5, name: 'Springville' },
+                        { id: 6, name: 'American Fork' },
+                    ],
+                },
+                { id: 3, name: 'PizzaCorp', stores: [{ id: 7, name: 'Spanish Fork' }] },
+                { id: 4, name: 'topSpot', stores: [] },
+            ],
+        };
+        expect(route.request().method()).toBe('GET');
+        await route.fulfill({ json: franchiseRes });
+    });
+
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
     await page.getByRole('textbox', { name: 'Email address' }).press('Tab');

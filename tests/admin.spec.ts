@@ -25,7 +25,7 @@ test('close franchise', async ({ page }) => {
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByText('admin-dashboard')).toBeVisible();
 
-    await page.getByRole('row', { name: 'pizzaPocket pizza franchisee' }).getByRole('button').click();
+    await page.getByRole('row', { name: 'LotaPizza Close' }).getByRole('button').click();
     await expect(page.getByText('Sorry to see you go')).toBeVisible();
 })
 
@@ -35,7 +35,7 @@ test('close store', async ({ page }) => {
     await page.getByRole('link', { name: 'Admin' }).click();
     await expect(page.getByText('admin-dashboard')).toBeVisible();
 
-    
-    await page.getByRole('row', { name: 'test 0 ₿ Close' }).getByRole('button').click();
+   
+    await page.getByRole('row', { name: 'Lehi ₿ Close' }).getByRole('button').click(); 
     await expect(page.getByRole('link', { name: 'close-store' })).toBeVisible();
 })
