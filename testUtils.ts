@@ -2,6 +2,10 @@ import {Role, User} from "./src/service/pizzaService";
 import { Page, } from "@playwright/test";
 import { test, expect } from 'playwright-test-coverage';
 
+export function randomEmail(){
+    return `user${Math.floor(Math.random() * 10000)}@jwt.com`;
+}
+
 export async function basicInit(page: Page, user?: User) {
     let loggedInUser: User | undefined;
     const validUsers: Record<string, User> = { 'd@jwt.com': { id: '3', name: 'Kai Chen', email: 'd@jwt.com', password: 'a', roles: [{ role: Role.Diner }] } };
@@ -117,3 +121,23 @@ export async function adminInit(page:Page){
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
 }
+
+export async function updateUserInit(page:Page, email:string){
+    await page.goto('/');
+    await page.getByRole('link', { name: 'Register' }).click();
+    await page.getByRole('textbox', { name: 'Full name' }).fill('pizza diner');
+    await page.getByRole('textbox', { name: 'Email address' }).fill(email);
+    await page.getByRole('textbox', { name: 'Password' }).fill('diner');
+    await page.getByRole('button', { name: 'Register' }).click();
+
+    return email;
+};
+
+export async function logoutLogin(page:Page, email:string, password:string){
+    await page.getByRole('link', { name: 'Logout' }).click();
+    await page.getByRole('link', { name: 'Login' }).click();
+
+    await page.getByRole('textbox', { name: 'Email address' }).fill(email);
+    await page.getByRole('textbox', { name: 'Password' }).fill(password);
+    await page.getByRole('button', { name: 'Login' }).click();
+};
