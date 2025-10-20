@@ -114,6 +114,19 @@ export async function adminInit(page:Page){
         await route.fulfill({ json: franchiseRes });
     });
 
+    // Standard user list
+    await page.route(/\/api\/user\?page=0&limit=10&name=.*$/, async (route) => {
+        const userRes = {
+            users: [
+                { id: 1, name: 'test1', email: randomEmail(), roles: ['user'] },
+                { id: 2, name: 'test2', email: randomEmail(), roles: ['user'] },
+                { id: 3, name: 'adminTest', email: randomEmail(), roles: ['admin'] },
+            ],
+        };
+        expect(route.request().method()).toBe('GET');
+        await route.fulfill({ json: userRes });
+    });
+
     await page.getByRole('link', { name: 'Login' }).click();
     await page.getByRole('textbox', { name: 'Email address' }).fill('a@jwt.com');
     await page.getByRole('textbox', { name: 'Email address' }).press('Tab');

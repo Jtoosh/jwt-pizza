@@ -18,6 +18,7 @@ export default function AdminDashboard(props: Props) {
   const [userList, setUserList] = React.useState<UserList>({users:[], more:false});
   const [userPage, setUserPage] = React.useState(0);
   const filterFranchiseRef = React.useRef<HTMLInputElement>(null);
+  const filterUserRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     (async () => {
@@ -28,8 +29,7 @@ export default function AdminDashboard(props: Props) {
   React.useEffect(() => {
     (async () => {
       // Assuming there's a method to get users, similar to getFranchises
-      const users = await pizzaService.getUsers(userPage, 10, '*');
-      setUserList(users);
+      setUserList(await pizzaService.getUsers(userPage, 10, '*'));
     })();
   }, [props.user, userPage]);
 
@@ -47,6 +47,10 @@ export default function AdminDashboard(props: Props) {
 
   async function filterFranchises() {
     setFranchiseList(await pizzaService.getFranchises(franchisePage, 10, `*${filterFranchiseRef.current?.value}*`));
+  }
+
+  async function filterUsers() {
+    setUserList(await pizzaService.getUsers(userPage, 10, `*${filterUserRef.current?.value}*`));
   }
 
   let response = <NotFound />;
@@ -171,8 +175,8 @@ export default function AdminDashboard(props: Props) {
                       <tfoot>
                         <tr>
                           <td className="px-1 py-1">
-                            <input type="text" ref={filterFranchiseRef} name="filterFranchise" placeholder="Filter franchises" className="px-2 py-1 text-sm border border-gray-300 rounded-lg" />
-                            <button type="submit" className="ml-2 px-2 py-1 text-sm font-semibold rounded-lg border border-orange-400 text-orange-400 hover:border-orange-800 hover:text-orange-800" onClick={filterFranchises}>
+                            <input type="text" ref={filterUserRef} name="filterUser" placeholder="Filter users" className="px-2 py-1 text-sm border border-gray-300 rounded-lg" />
+                            <button type="submit" className="ml-2 px-2 py-1 text-sm font-semibold rounded-lg border border-orange-400 text-orange-400 hover:border-orange-800 hover:text-orange-800" onClick={filterUsers}>
                               Submit
                             </button>
                           </td>

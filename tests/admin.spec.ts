@@ -47,4 +47,6 @@ test('list users', async ({ page }) => {
     await expect(page.getByText('admin-dashboard')).toBeVisible();
 
     await expect(page.getByText('Users')).toBeVisible();
+
+    await expect(page.getByText('test1')).toBeVisible();
 });
