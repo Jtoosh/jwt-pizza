@@ -39,3 +39,12 @@ test('close store', async ({ page }) => {
     await page.getByRole('row', { name: 'Lehi ₿ Close' }).getByRole('button').click(); 
     await expect(page.getByRole('link', { name: 'close-store' })).toBeVisible();
 })
+
+test('list users', async ({ page }) => {
+    await adminInit(page);
+    
+    await page.getByRole('link', { name: 'Admin' }).click();
+    await expect(page.getByText('admin-dashboard')).toBeVisible();
+
+    await expect(page.getByText('Users')).toBeVisible();
+});
