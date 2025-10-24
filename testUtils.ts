@@ -115,7 +115,7 @@ export async function adminInit(page:Page){
     });
 
     // Filtered user list
-    await page.route(/\/api\/user\?page=0&limit=10&name=test1$/, async (route) => {
+    await page.route('https://pizza-service.cs329.click/api/user?page=0&limit=10&name=test1', async (route) => {
         const userRes = {
             users: [
                 { id: 1, name: 'test1', email: randomEmail(), roles: ['user'] },
