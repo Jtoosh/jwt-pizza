@@ -28,7 +28,6 @@ export default function AdminDashboard(props: Props) {
 
   React.useEffect(() => {
     (async () => {
-      // Assuming there's a method to get users, similar to getFranchises
       setUserList(await pizzaService.getUsers(userPage, 10, '*'));
     })();
   }, [props.user, userPage]);
@@ -43,6 +42,10 @@ export default function AdminDashboard(props: Props) {
 
   async function closeStore(franchise: Franchise, store: Store) {
     navigate('/admin-dashboard/close-store', { state: { franchise: franchise, store: store } });
+  }
+
+  async function deleteUser(user: User) {
+   navigate('/admin-dashboard/delete-user', { state: { user: user } });
   }
 
   async function filterFranchises() {
@@ -163,9 +166,9 @@ export default function AdminDashboard(props: Props) {
                               <td className="text-start px-2 whitespace-nowrap text-sm font-normal text-gray-800">{user.email}</td>
                               <td className="text-start px-2 whitespace-nowrap text-sm font-normal text-gray-800">{user.roles?.map((r) => r.role).join(', ')}</td>
                               <td className="px-6 py-1 whitespace-nowrap text-end text-sm font-medium">
-                                <button type="button" className="px-2 py-1 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-1 border-orange-400 text-orange-400  hover:border-orange-800 hover:text-orange-800" onClick={() => {/* Implement user removal if needed */}}>
+                                <button type="button" className="px-2 py-1 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-1 border-orange-400 text-orange-400  hover:border-orange-800 hover:text-orange-800" onClick={() => {deleteUser(user)}}>
                                   <TrashIcon />
-                                  Close
+                                  Remove
                                 </button>
                               </td>
                             </tr>
@@ -180,7 +183,7 @@ export default function AdminDashboard(props: Props) {
                               Submit
                             </button>
                           </td>
-                          <td colSpan={4} className="text-end text-sm font-medium">
+                          <td colSpan={3} className="text-end text-sm font-medium">
                             <button className="w-12 p-1 text-sm font-semibold rounded-lg border border-transparent bg-white text-grey border-grey m-1 hover:bg-orange-200 disabled:bg-neutral-300 " onClick={() => setUserPage(userPage - 1)} disabled={userPage <= 0}>
                               «
                             </button>

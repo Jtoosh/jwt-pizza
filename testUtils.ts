@@ -114,8 +114,19 @@ export async function adminInit(page:Page){
         await route.fulfill({ json: franchiseRes });
     });
 
+    // Filtered user list
+    await page.route(/\/api\/user\?page=0&limit=10&name=test1$/, async (route) => {
+        const userRes = {
+            users: [
+                { id: 1, name: 'test1', email: randomEmail(), roles: ['user'] },
+            ],
+        };
+        expect(route.request().method()).toBe('GET');
+        await route.fulfill({ json: userRes });
+    });
+
     // Standard user list
-    await page.route(/\/api\/user\?page=0&limit=10&name=.*$/, async (route) => {
+    await page.route(/\/api\/user\?page=0&limit=10&name=\*$/, async (route) => {
         const userRes = {
             users: [
                 { id: 1, name: 'test1', email: randomEmail(), roles: ['user'] },
@@ -125,6 +136,12 @@ export async function adminInit(page:Page){
         };
         expect(route.request().method()).toBe('GET');
         await route.fulfill({ json: userRes });
+    });
+
+    // Mock delete user endpoint
+    await page.route(/\/api\/user\/\d+$/, async (route) => {
+        expect(route.request().method()).toBe('DELETE');
+        await route.fulfill({ status: 200 });
     });
 
     await page.getByRole('link', { name: 'Login' }).click();
