@@ -238,6 +238,7 @@ export function scenario_1() {
     }
 
     jwts['jwt1'] = jsonpath.query(response.json(), '$.jwt')[0]
+    // console.log(jwts['jwt1']);
 
     response = http.options('https://pizza-service.jtdevops.click/api/order', null, {
       headers: {
@@ -255,9 +256,13 @@ export function scenario_1() {
     })
     sleep(1.8)
 
+
+
     response = http.post(
       'https://pizza-factory.cs329.click/api/order/verify',
-      `{"jwt": ${jwts['jwt1']}}`,
+      JSON.stringify({
+        jwt: jwts['jwt1']
+      }),
       {
         headers: {
           accept: '*/*',
@@ -278,6 +283,7 @@ export function scenario_1() {
         },
       }
     )
+    console.log(response)
 
     response = http.options('https://pizza-factory.cs329.click/api/order/verify', null, {
       headers: {
