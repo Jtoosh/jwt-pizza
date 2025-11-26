@@ -64,6 +64,28 @@ aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID
 
 ## Additional Application: Traffic Generation using Cron Jobs
 
+Something that caught my attention while doing research is cron jobs. Cron is a time-based job scheduler in Unix-like operating systems. Users can schedule jobs (commands or scripts) to run periodically at fixed times, dates, or intervals. This is particularly useful for automating repetitive tasks.
+
+I wanted to find a way to use this to help with JWT-Pizza. One of the challenges that I found was remembering to generate traffic while working on my metrics and logging deliverables. When I needed to observe changes to my metrics code, I would often have to start the script and then wait a few minutes for meaningful data to be there.
+
+So, I decided to learn how to set up a cron job that would run traffic generation every weekday at noon. This way, I could ensure that there would be a steady stream of traffic to JWT-Pizza without needing to remember to start the script manually. Following are the steps that I took:
+
+1. Open the terminal.
+2. Type `crontab -l` to list existing cron jobs (if any).
+3. Type `crontab -e` to edit the cron jobs file.
+4. Add the following line to schedule the traffic generation script to run every weekday at 3pm:
+
+   `0 15 * * 1-5 /path/to/generatePizzaTraffic.sh https://pizza-service.jtdevops.click`
+5. Save and exit the editor.
+
+Now, here are some metrics visible from the cron job running later in the day:
+
+![Cron Job Metrics](./cronjob_metrics_screenshot.png)
+
+### Other Considerations
+
+Admittedly, this application has a fairly small scale, and is mostly for personal use. That does have value, but a way to make this more applicable and scalable would be to set up cron jobs on the production server itself. This way, traffic generation could be more consistent and not dependent on my personal machine being on and connected to the internet. That would also be the ideal setup for other applications described earlier, such as automated backups and server health monitoring.
+
 ### References
 - [Usage statistics and market shares of operating systems for websites](https://w3techs.com/technologies/overview/operating_system)
 - [.github/workflows/ci.yml](.github/workflows/ci.yml)
